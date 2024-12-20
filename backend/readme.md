@@ -106,6 +106,7 @@ Yeni bir başvuru ekleme ekranı.
 Tüm süreçler dijital arşivde kayıt altına alınır, takip edilir ve raporlanabilir.
 
 ---
+---
 
 # API İstek ve Yanıtları (Postman Testleri)
 
@@ -306,8 +307,10 @@ Bu violation'ın `category` veya `summary` alanını güncellemek istersen, bir 
     "category": "Tehdit",
     "summary": "Görsel bir tehdit içeren yorum."
 }
+```
 Beklenen Yanıt:
 
+```json
 {
     "incidentDate": "2024-12-20T00:00:00.000Z",
     "person": {
@@ -341,6 +344,7 @@ Beklenen Yanıt:
     "updatedAt": "2024-12-20T02:42:00.000Z",
     "__v": 0
 }
+```
 
 
 5. Violation Silme (DELETE /violations/:id)
