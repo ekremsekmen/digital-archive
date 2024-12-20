@@ -110,7 +110,6 @@ Tüm süreçler dijital arşivde kayıt altına alınır, takip edilir ve raporl
 
 # API İstek ve Yanıtları (Postman Testleri)
 
----
 
 ## **1. POST /violations**
 **Amaç:** Yeni bir violation (ihlâl) oluşturmak.  
