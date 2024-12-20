@@ -358,3 +358,61 @@ Beklenen Yanıt:
 {
     "message": "Violation deleted successfully"
 }
+
+---
+
+---
+
+### İhlal İstatistikleri API
+
+#### Endpoint  
+`GET http://localhost:3000/violations/statistics`
+
+#### Dönen Cevap  
+```json
+{
+    "genderDistribution": [
+        {
+            "_id": "Male",
+            "count": 2
+        },
+        {
+            "_id": "Female",
+            "count": 1
+        }
+    ],
+    "categoryDistribution": [
+        {
+            "_id": "Şiddet",
+            "count": 1
+        },
+        {
+            "_id": "Taciz",
+            "count": 1
+        },
+        {
+            "_id": "Hakaret",
+            "count": 1
+        }
+    ],
+    "ageDistribution": [
+        {
+            "range": "0-18",
+            "count": 1
+        },
+        {
+            "range": "30-50",
+            "count": 2
+        }
+    ],
+    "total": 3
+}
+```
+
+#### Açıklama
+- **`genderDistribution`**: İhlallerin cinsiyete göre dağılımı (Erkek: 2, Kadın: 1).  
+- **`categoryDistribution`**: İhlallerin kategoriye göre dağılımı (Hakaret, Şiddet, Taciz: 1’er adet).  
+- **`ageDistribution`**: İhlallerin yaş aralığına göre dağılımı (0-18: 1, 30-50: 2).  
+- **`total`**: Toplam ihlal sayısı (3).  
+
+Bu API, ihlallerin demografik ve kategorik analizini sağlar.

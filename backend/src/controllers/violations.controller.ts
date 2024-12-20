@@ -87,3 +87,70 @@ export const deleteViolation = async (req: Request, res: Response): Promise<void
         }
     }
 };
+
+export const getStatistics = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // Toplam vaka sayısını ayrı bir sorgu ile al
+        const total = await Violation.countDocuments();
+
+        // Diğer istatistikler için aggregate kullan
+        const statistics = await Violation.aggregate([
+            {
+                $facet: {
+                    genderDistribution: [
+                        { $group: { _id: { $ifNull: ["$person.gender", "Unknown"] }, count: { $sum: 1 } } },
+                        { $sort: { count: -1 } },
+                    ],
+                    categoryDistribution: [
+                        { $group: { _id: "$category", count: { $sum: 1 } } },
+                        { $sort: { count: -1 } },
+                    ],
+                    ageDistribution: [
+                        {
+                            $bucket: {
+                                groupBy: { $ifNull: ["$person.age", 0] },
+                                boundaries: [0, 18, 30, 50, 65, 100],
+                                default: "Unknown",
+                                output: { count: { $sum: 1 } },
+                            },
+                        },
+                        {
+                            $addFields: {
+                                label: {
+                                    $switch: {
+                                        branches: [
+                                            { case: { $eq: ["$_id", 0] }, then: "0-18" },
+                                            { case: { $eq: ["$_id", 18] }, then: "18-30" },
+                                            { case: { $eq: ["$_id", 30] }, then: "30-50" },
+                                            { case: { $eq: ["$_id", 50] }, then: "50-65" },
+                                            { case: { $eq: ["$_id", 65] }, then: "65+" },
+                                        ],
+                                        default: "Unknown",
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                },
+            },
+        ]);
+
+        const formattedStatistics = {
+            genderDistribution: statistics[0]?.genderDistribution || [],
+            categoryDistribution: statistics[0]?.categoryDistribution || [],
+            ageDistribution: statistics[0]?.ageDistribution.map((group: any) => ({
+                range: group.label,
+                count: group.count,
+            })),
+            total, // Toplam vaka sayısını ekle
+        };
+
+        res.status(200).json(formattedStatistics);
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            res.status(500).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: "An unknown error occurred" });
+        }
+    }
+};
