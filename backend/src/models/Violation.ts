@@ -1,28 +1,58 @@
-import { Schema } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-const ViolationSchema = new Schema({
-    incidentDate: { type: Date, required: true }, // Vaka Tarihi
-    person: { 
-      name: { type: String, required: true }, // Mağdur Adı
-      gender: { type: String }, // Cinsiyet
-      age: { type: Number }, // Yaş
+// TypeScript Interface for Violation Document
+interface IViolation extends Document {
+    incidentDate: Date;
+    person: {
+        name: string;
+        gender?: string;
+        age?: number;
+    };
+    category: string;
+    summary?: string;
+    source: {
+        type: 'Medya' | 'STK' | 'Kamu Kurumu' | 'Baro Komisyonları';
+        detail?: string;
+    };
+    relatedLinks?: {
+        link?: string;
+        visualLink?: string;
+        files?: string[];
+    }[];
+    scanPeriod: {
+        start: Date;
+        end: Date;
+    };
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+// Schema Definition
+const ViolationSchema = new Schema<IViolation>({
+    incidentDate: { type: Date, required: true },
+    person: {
+        name: { type: String, required: true },
+        gender: { type: String },
+        age: { type: Number },
     },
-    category: { type: String, required: true }, // Olay Kategorisi
-    summary: { type: String }, // Olay Özeti
-    source: { 
-      type: { type: String, enum: ['Medya', 'STK', 'Kamu Kurumu', 'Baro Komisyonları'], required: true }, 
-      detail: { type: String }, // Kaynak Detayı (ör. link veya kurum adı)
+    category: { type: String, required: true },
+    summary: { type: String },
+    source: {
+        type: { type: String, enum: ['Medya', 'STK', 'Kamu Kurumu', 'Baro Komisyonları'], required: true },
+        detail: { type: String },
     },
-    relatedLinks: [{ 
-      link: { type: String }, // Medya/STK Linki
-      visualLink: { type: String }, // Görsel Linki
-      files: [{ type: String }], // Yüklenen Dosyalar
+    relatedLinks: [{
+        link: { type: String },
+        visualLink: { type: String },
+        files: [{ type: String }],
     }],
-    scanPeriod: { 
-      start: { type: Date, required: true }, // Tarama Başlangıç Tarihi
-      end: { type: Date, required: true } // Tarama Bitiş Tarihi
+    scanPeriod: {
+        start: { type: Date, required: true },
+        end: { type: Date, required: true },
     },
-    
-},{ timestamps: true });
+}, { timestamps: true });
 
-export default ViolationSchema;
+// Model Creation
+const Violation = model<IViolation>('Violation', ViolationSchema);
+
+export default Violation;

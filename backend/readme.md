@@ -416,3 +416,77 @@ Beklenen Yanıt:
 - **`total`**: Toplam ihlal sayısı (3).  
 
 Bu API, ihlallerin demografik ve kategorik analizini sağlar.
+
+
+---
+
+### Case API
+
+#### Yeni Bir Case Oluşturma
+
+##### Endpoint  
+`POST http://localhost:3000/cases`
+
+##### Gönderilecek JSON Veri  
+```json
+{
+    "fileNo": "12345",
+    "applicationNo": "67890",
+    "court": "Ankara Adliyesi",
+    "caseSubject": "Trafik Kazası",
+    "applicant": {
+        "name": "Ahmet Yılmaz",
+        "lawyer": "Av. Mehmet Kaya"
+    },
+    "indictment": "Suç duyurusu metni",
+    "relatedDocuments": [
+        {
+            "documentPath": "/documents/doc1.pdf",
+            "documentDescription": "Olay yeri fotoğrafları"
+        }
+    ],
+    "hearingReports": [
+        {
+            "documentPath": "/hearingReports/report1.pdf"
+        }
+    ],
+    "petitions": [
+        {
+            "documentPath": "/petitions/petition1.pdf"
+        }
+    ],
+    "minutes": [
+        {
+            "documentPath": "/minutes/minute1.pdf"
+        }
+    ],
+    "createdAt": "2023-10-01T00:00:00.000Z",
+    "updatedAt": "2023-10-01T00:00:00.000Z"
+}
+
+### Tüm Case'leri Getirme
+ Endpoint
+GET http://localhost:3000/cases
+
+ID ile Bir Case Getirme
+Endpoint
+GET http://localhost:3000/cases/:id
+
+
+### ID ile Bir Case Güncelleme ###
+Endpoint
+PUT http://localhost:3000/cases/:id
+
+Gönderilecek JSON Veri : 
+
+{
+    "caseSubject": "Yeni Trafik Kazası",
+    "applicant": {
+        "name": "Mehmet Yılmaz",
+        "lawyer": "Av. Ayşe Kaya"
+    }
+}
+
+### ID ile Bir Case Silme
+Endpoint
+DELETE http://localhost:3000/cases/:id

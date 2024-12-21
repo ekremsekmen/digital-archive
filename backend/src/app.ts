@@ -1,16 +1,16 @@
 import express from 'express';
 import violationsRoutes from './routes/violations.routes';
+import caseRoutes from './routes/cases.routes'
 import connectDB from './config/db';
 
 const app = express();
 
-// Connect to MongoDB
 connectDB();
 
-// Middleware to parse JSON bodies
+
 app.use(express.json());
 
-// Use the violations routes
 app.use('/violations', violationsRoutes);
+app.use('/cases', caseRoutes);
 
 export default app;

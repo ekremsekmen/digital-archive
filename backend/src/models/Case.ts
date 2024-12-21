@@ -1,26 +1,59 @@
-import { Schema } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
-const CaseSchema = new Schema({
-    caseDate: { type: Date, required: true }, // Dava Tarihi
-    parties: [{ 
-      name: { type: String, required: true }, // Taraf Adı
-      role: { type: String }, // Rol (Davacı/Davalı)
-      gender: { type: String }, // Cinsiyet
-      age: { type: Number }, // Yaş
+interface ICase extends Document {
+    fileNo: string;
+    applicationNo: string;
+    court: string;
+    caseSubject: string;
+    applicant: {
+        name: string;
+        lawyer?: string;
+    };
+    indictment?: string;
+    relatedDocuments?: {
+        documentPath: string;
+        documentDescription?: string;
+    }[];
+    hearingReports?: {
+        documentPath: string;
+    }[];
+    petitions?: {
+        documentPath: string;
+    }[];
+    minutes?: {
+        documentPath: string;
+    }[];
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+const CaseSchema = new Schema<ICase>({
+    fileNo: { type: String, required: true, unique: true },
+    applicationNo: { type: String, required: true, unique: true },
+    court: { type: String, required: true },
+    caseSubject: { type: String, required: true },
+    applicant: { 
+        name: { type: String, required: true },
+        lawyer: { type: String },
+    },
+    indictment: { type: String },
+    relatedDocuments: [{ 
+        documentPath: { type: String },
+        documentDescription: { type: String },
     }],
-    institution: { type: String }, // İlgili Kurum
-    subject: { type: String, required: true }, // Dava Konusu
-    summary: { type: String }, // Dava Özeti
-    lawyer: { type: String, required: true }, // Takip Eden Avukat
-    relatedFiles: [{ 
-      documentPath: { type: String }, // Dosya Yolu 
-      documentType: { type: String, enum: ['Duruşma Raporu', 'Dilekçe', 'Ek Dosya'] }, // Dosya Türü
+    hearingReports: [{ 
+        documentPath: { type: String, required: true },
     }],
-    associatedViolation: { type: Schema.Types.ObjectId, ref: 'Violation' }, // İlişkili Hak İhlali
-    caseNo: { type: String, required: true }, // Dava No
-    court: { type: String }, // Mahkeme Bilgisi
-    indictment: { type: String }, // İddianame
+    petitions: [{ 
+        documentPath: { type: String, required: true },
+    }],
+    minutes: [{ 
+        documentPath: { type: String, required: true },
+    }],
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
-  });
-  
+});
+
+const Case = model<ICase>('Case', CaseSchema);
+
+export default Case;

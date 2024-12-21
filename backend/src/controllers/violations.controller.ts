@@ -1,9 +1,5 @@
 import { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import ViolationSchema from '../models/Violation';
-
-// Create the model
-const Violation = mongoose.model('Violation', ViolationSchema);
+import Violation from '../models/Violation';
 
 // Create a new violation
 export const createViolation = async (req: Request, res: Response): Promise<void> => {
